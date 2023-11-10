@@ -11,7 +11,7 @@ import { View } from 'react-native-web';
 import { initializeApp } from 'firebase/app';
 import { LoginScreen } from './Screens/Login';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
+import HomeScreen from './Screens/Home';
 // import HomeScreen from './screens/Home';
 // import AddContactScreen from './screens/AddContact';
 // import EditContactScreen from './screens/EditContact';
@@ -34,9 +34,11 @@ const App = () => {
         <Stack.Navigator>
         <Stack.Screen name="Signup" component={SignUpScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
         </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>
+
       
 
       

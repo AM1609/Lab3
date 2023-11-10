@@ -11,21 +11,10 @@ import { Images, Colors} from '../config1';
 import { useTogglePasswordVisibility } from '../hooks';
 import { loginValidationSchema } from '../utils';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-export const LoginScreen = () => {
+export const LoginScreen = ({navigation}) => {
     const [errorState, setErrorState] = useState('');
     const { passwordVisibility, handlePasswordVisibility, rightIcon } =
     useTogglePasswordVisibility();
-    const handleLogin = (values) => {
-    const { email, password } = values;
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-        .then(
-            ({user})=> console.log(user)
-            )
-        .catch(error =>
-            setErrorState(error.message)
-        );
-    };
     const handleChange = (text, eventName) => {
         setValues((prev) => ({
           ...prev,
@@ -43,7 +32,6 @@ export const LoginScreen = () => {
         setshowpass (!showpass)
       }
 
-    
       const handleSignup = () => {
         const { email, password } = values;
         const auth = getAuth();
@@ -56,23 +44,38 @@ export const LoginScreen = () => {
             alert(error.message);
           });
       }
+      const atLogin = () => {
+        navigation.navigate("Home"), 
+        handleSignup;
+      }
     return (
-        <SafeAreaProvider style={{flex:1}}>
-          <View style={styles.logoContainer}>
+        <SafeAreaProvider style = {styles.view}>
+          
+        <View style={styles.logoContainer}>
                 <Logo uri={Images.logo} />
                 <Text style={styles.screenTitle}>Welcome back!</Text>
         </View>
-        <View style={styles.view}>
+      <View style={{flex:3}}>
         {signUpSuccess && <Text style={{ color: 'green' }}>Đăng nhập thành công</Text>}
-        <TextInput placeholder="Địa chỉ Email" onChangeText={(text) => handleChange(text, 'email')} />
+        <TextInput 
+        placeholder="Địa chỉ Email" 
+        onChangeText={(text) => handleChange(text, 'email')}
+        left={<TextInput.Icon icon="email" />}
+         />
         <TextInput placeholder="Mật khẩu" 
         onChangeText={(text) => handleChange(text, 'password')} 
-        right={<TextInput.Icon icon="eye" onPress={passst}/>} 
+        right={<TextInput.Icon icon="eye" onPress={passst}/>}
+        left={<TextInput.Icon icon="key" />}  
         secureTextEntry={showpass}
         /> 
         <View>
-        <Button style={styles.button} onPress={handleSignup}>
+        <Button style={styles.button} onPress={atLogin}>
             <Text style={styles.buttonText}>Login</Text>
+        </Button>
+        </View>
+        <View>
+        <Button style={styles.button} onPress={() => navigation.navigate("Signup")} >
+            <Text style={styles.buttonText}>Đăng Ký</Text>
         </Button>
         </View>
       </View>
@@ -80,41 +83,38 @@ export const LoginScreen = () => {
     );
 };
 const styles = StyleSheet.create({
-    screenTitle: {
-      fontSize: 32,
-      fontWeight: '700',
-      color: Colors.black,
-      paddingTop: 20,
-      textAlign: 'center',
-    },
-    logoContainer:{
-      alignItems: 'center'
-    },
-    inputField: {
-      padding: 14,
-      fontSize: 22,
-      width: '90%'
-    },
+  view: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoContainer:{
+    alignItems: 'center',
+    flex:2,
+  },
+  screenTitle: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: Colors.black,
+    paddingTop: 20,
+    textAlign: 'center',
+  },
+  button: {
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 8,
+    backgroundColor: Colors.orange,
+    padding: 10,
+    borderRadius: 8,
+  },
+  buttonText: {
+    fontSize: 20,
+    color: Colors.white,
+    fontWeight: '700',
+  },
+});
 
-    button: {
-      width: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginTop: 8,
-      backgroundColor: Colors.orange,
-      padding: 10,
-      borderRadius: 8,
-    },
-    buttonText: {
-      fontSize: 20,
-      color: Colors.white,
-      fontWeight: '700',
-    },
-    borderlessButtonContainer: {
-      marginTop: 16,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  });
-  
+
   
