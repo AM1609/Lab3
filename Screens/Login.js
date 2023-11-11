@@ -1,20 +1,14 @@
 import React, { useState } from 'react';
 import { Text, StyleSheet } from 'react-native';
-import { Formik } from 'formik';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import auth from 'firebase/auth';
+
 import { View, Logo, Button, FormErrorMessage } from '../components';
 import { HelperText, TextInput } from 'react-native-paper';
 import { Images, Colors} from '../config1';
 
 import { useTogglePasswordVisibility } from '../hooks';
-import { loginValidationSchema } from '../utils';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 export const LoginScreen = ({navigation}) => {
-    const [errorState, setErrorState] = useState('');
-    const { passwordVisibility, handlePasswordVisibility, rightIcon } =
-    useTogglePasswordVisibility();
     const handleChange = (text, eventName) => {
         setValues((prev) => ({
           ...prev,
@@ -45,18 +39,30 @@ export const LoginScreen = ({navigation}) => {
           });
       }
       const atLogin = () => {
-        navigation.navigate("Home"), 
-        handleSignup;
+        const { email, password } = values;
+        const auth = getAuth();
+        
+        signInWithEmailAndPassword(auth, email, password)
+          .then(() => {
+            setSignUpSuccess(true);
+            navigation.navigate("Home");
+          })
+          .catch((error) => {
+            alert(error.message);
+          });
+        
+        
+        
       }
     return (
         <SafeAreaProvider style = {styles.view}>
-          
-        <View style={styles.logoContainer}>
+          <View>
+          <View style={styles.logoContainer}>
                 <Logo uri={Images.logo} />
                 <Text style={styles.screenTitle}>Welcome back!</Text>
         </View>
-      <View style={{flex:3}}>
-        {signUpSuccess && <Text style={{ color: 'green' }}>Đăng nhập thành công</Text>}
+      <View style={{flex:2}}>
+        {/* {signUpSuccess && <Text style={{ color: 'green' }}>{mess}</Text>} */}
         <TextInput 
         placeholder="Địa chỉ Email" 
         onChangeText={(text) => handleChange(text, 'email')}
@@ -74,11 +80,23 @@ export const LoginScreen = ({navigation}) => {
         </Button>
         </View>
         <View>
-        <Button style={styles.button} onPress={() => navigation.navigate("Signup")} >
-            <Text style={styles.buttonText}>Đăng Ký</Text>
-        </Button>
+        <Button 
+        style={styles.borderlessButtonContainer} 
+        onPress={() => navigation.navigate("Signup")} 
+        title={'Chưa có tài khoản ?'} 
+        borderless>
+          </Button>
+          <Button 
+        style={styles.borderlessButtonContainer} 
+        onPress={() => navigation.navigate("ForgotPassword")} 
+        title={'Quên mật khẩu ?'} 
+        borderless>
+          </Button>
         </View>
       </View>
+          </View>
+          
+        
       </SafeAreaProvider>
     );
 };
@@ -91,7 +109,6 @@ const styles = StyleSheet.create({
   },
   logoContainer:{
     alignItems: 'center',
-    flex:2,
   },
   screenTitle: {
     fontSize: 32,
@@ -113,6 +130,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: Colors.white,
     fontWeight: '700',
+  },
+  borderlessButtonContainer: {
+    marginTop: 16,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 });
 

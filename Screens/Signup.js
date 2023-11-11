@@ -3,9 +3,6 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 import React, { useState } from 'react';
 import { Text, StyleSheet } from 'react-native';
-import { Formik } from 'formik';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import auth from 'firebase/auth';
 import { HelperText, TextInput } from 'react-native-paper';
 import { View, Logo, Button, FormErrorMessage } from '../components';
 import { Images, Colors} from '../config1';
@@ -28,14 +25,29 @@ export default function SignUpScreen({ navigation }) {
         return false
       }
   }
+  
   const [showpass, setshowpass] = useState(true);
+  const [rightIcon, setRightIcon] = useState('eye');
   const passst = () =>{
-    setshowpass (!showpass)
-  }
+    if (rightIcon == 'eye') {
+      setRightIcon('eye-off');
+      setshowpass (!showpass);
+    } else if (rightIcon == 'eye-off') {
+      setRightIcon('eye');
+      setshowpass (!showpass);
+    }
+  };
   const [showrepass, setshowrepass] = useState(true);
+  const [rightreIcon, setreRightIcon] = useState('eye');
   const repassst = () =>{
-    setshowrepass (!showrepass)
-  }
+    if (rightIcon == 'eye') {
+      setreRightIcon('eye-off');
+      setshowrepass (!showpass);
+    } else if (rightIcon == 'eye-off') {
+      setreRightIcon('eye');
+      setshowrepass (!showpass);
+    }
+  };
   const onChangeemail = email => setemail(email);
   const handleSignup = () => {
     const auth = getAuth();
@@ -49,13 +61,13 @@ export default function SignUpScreen({ navigation }) {
   }
   return (
 <SafeAreaProvider style = {styles.view}>
-      <View style={{flex:2}}>
+      <View>
           <View style={styles.logoContainer}>
                 <Logo uri={Images.logo} />
                 <Text style={styles.screenTitle}>Create a new account!</Text>
           </View>
       {signUpSuccess && <Text style={{ color: 'green' }}>Đăng ký thành công.</Text>}
-      <View style={{flex:3}}>
+      <View style={{flex:2}}>
       <TextInput 
       value={email}
       left={<TextInput.Icon icon="email" />} 
@@ -68,7 +80,7 @@ export default function SignUpScreen({ navigation }) {
       <TextInput
       value={password}
       left={<TextInput.Icon icon="key" />} 
-      right={<TextInput.Icon icon="eye" onPress={passst} />} 
+      right={<TextInput.Icon icon={rightIcon} onPress={passst} />} 
       placeholder="Mật khẩu" 
       onChangeText={
         setpassword
@@ -77,7 +89,7 @@ export default function SignUpScreen({ navigation }) {
       <TextInput
       value={repassword}
       left={<TextInput.Icon icon="key" />} 
-      right={<TextInput.Icon icon="eye" onPress={repassst}/>} 
+      right={<TextInput.Icon icon={rightreIcon} onPress={repassst}/>} 
       placeholder="Nhập lại mật khẩu" 
       onChangeText={
         setrepassword
@@ -88,17 +100,22 @@ export default function SignUpScreen({ navigation }) {
       </HelperText>
       </View>
       
-      <View>
-      <Button style={styles.button} onPress={handleSignup}>
-            <Text style={styles.buttonText}>Đăng Ký</Text>
-      </Button>
-      
-      </View>
-      <View>
-      <Button style={styles.button} onPress={() => navigation.navigate("Login")} >
-            <Text style={styles.buttonText}>Đăng nhập</Text>
+        <View>
+        <Button style={styles.button} onPress={handleSignup}>
+              <Text style={styles.buttonText}>Đăng Ký</Text>
         </Button>
-      </View>
+        
+        </View>
+        <View>
+        <Button 
+        style={styles.borderlessButtonContainer} 
+        onPress={() => navigation.navigate("Login")} 
+        title={'Đã có tài khoản ?'} 
+        borderless>
+          </Button>
+        </View>
+      
+      
       
     </View>
 </SafeAreaProvider>
@@ -136,5 +153,11 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontWeight: '700',
   },
+  borderlessButtonContainer: {
+    marginTop: 16,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+    
 });
 
